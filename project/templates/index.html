@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Falling Motifs Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Canvas is created by JS or used as a layer if needed, 
+             but here we will use DOM elements for motifs to easily handle CSS transforms/images -->
+        <div id="game-area"></div>
+        
+        <div id="message-overlay" class="hidden">
+            <div class="message-box">
+                <p id="result-text"></p>
+<!--                <button onclick="location.reload()">もう一度遊ぶ</button>-->
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

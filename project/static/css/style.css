@@ -1,0 +1,251 @@
+:root {
+    --normal-size: 64px;
+    --merged-size: 168px;
+    --final-size: 512px;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #222;
+    font-family: 'Noto Sans JP', sans-serif !important;
+    font-weight: 300;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-container {
+    width: 375px;
+    height: 667px;
+    position: relative;
+    overflow: hidden;
+    background-color: #dce9ee;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+
+    /* 【修正箇所】背景は四角形に見せたいので、border-radiusを削除（または0に） */
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#game-area {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* メッセージオーバーレイのスタイル調整 */
+#message-overlay {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 1000;
+    pointer-events: none;
+    transition: opacity 1s ease;
+}
+
+#message-overlay.hidden {
+    display: none;
+    opacity: 0;
+}
+
+#message-overlay.fade-out {
+    opacity: 0;
+}
+
+.message-box {
+    background: none;
+    padding: 15px 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgb(255, 255, 255);
+    text-align: center;
+}
+
+#result-text {
+    margin: 0;
+    color: #333;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.motif {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    will-change: transform;
+    top: 0;
+    left: 0;
+    transition: filter 0.2s;
+}
+
+.motif.normal {
+    width: 64px;
+    height: 64px;
+    margin-left: -32px;
+    margin-top: -32px;
+    border-radius: 50%; /* Normalは円形を維持 */
+}
+
+.motif.merged {
+    width: 168px;
+    height: 168px;
+    margin-left: -84px;
+    margin-top: -84px;
+    border-radius: 0%; /* Mergedは四角形 */
+    object-fit: contain;
+}
+
+/* Selected State (ホバリング中の見た目) */
+.motif.selected {
+    filter: brightness(1.1) drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2));
+    z-index: 100;
+}
+
+/* Cinematic Overlay */
+#cinematic-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#cinematic-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#cinematic-image {
+    width: 50%;
+    height: auto;
+    transform: scale(0);
+}
+
+.spin-anim {
+    animation: cinematicSpin 1.5s ease-in-out forwards;
+}
+
+@keyframes cinematicSpin {
+    0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+    20% { transform: rotate(36deg) scale(1.1); opacity: 1; }
+    100% { transform: rotate(360deg) scale(1); opacity: 1; }
+}
+
+/* Finale Styles */
+#finale-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(220, 233, 238, 0.95);
+    opacity: 0;
+    transition: opacity 1s ease;
+    z-index: 999;
+    pointer-events: none;
+}
+
+#finale-container.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.finale-image {
+    width: 310px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: floatFinal 3s infinite ease-in-out;
+}
+
+.finale-text {
+    font-size: 1.1rem;
+    color: #333;
+    text-align: center;
+    margin: 10px 30px;
+    white-space: pre-wrap;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+        font-family: 'Noto Sans JP', sans-serif !important;
+        font-weight: 300 !important; /* 説明文と同じ細めに設定 */
+        font-size: 12px;
+        line-height: 1.8;
+        letter-spacing: 0.05em; /* 少し文字の間隔を広げると占っぽさが出ます */
+}
+
+/* 【修正箇所】もう一度遊ぶボタンの色変更 */
+.restart-btn {
+    display: none;
+    background-color: #8fa3ad; /* お好みの色（くすみカラー）に変更 */
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.restart-btn:hover {
+    background-color: #7a8c96; /* ホバー時に少し暗く */
+}
+
+#finale-container.visible .restart-btn {
+    display: block;
+    animation: popBtn 0.5s 1s backwards;
+}
+
+.restart-btn:active {
+    transform: scale(0.95);
+}
+
+@keyframes floatFinal {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes popBtn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+#result-text, .message-box, body, html {
+    font-family: 'Noto Sans JP', sans-serif !important;
+    font-weight: 300 !important;
+    -webkit-font-smoothing: antialiased; /* 文字をより滑らかに表示 */
+}
+
+/* 念のため、すべての要素に適用 */
+* {
+    font-family: 'Noto Sans JP', sans-serif !important;
+}
