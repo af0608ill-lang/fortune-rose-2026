@@ -54,6 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const messageOverlay = document.getElementById('message-overlay');
 
+    // CSS修正：スマホの誤作動防止設定を直接追加
+    if (gameArea) {
+        gameArea.style.touchAction = 'none';
+        gameArea.style.webkitUserSelect = 'none';
+        gameArea.style.webkitTouchCallout = 'none';
+    }
+
     // Create Cinematic Overlay if missing (though typically in HTML, ensuring it exists)
     let cinematicOverlay = document.getElementById('cinematic-overlay');
     if (!cinematicOverlay) {
@@ -220,10 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (p) p.innerText = "あとひとつ...!";
                         msgOverlay.style.opacity = '1';
 
-                        // optional: fade out after a few seconds? 
-                        // User didn't ask to hide it, but usually overlays shouldn't block view forever.
-                        // However, "あとひとつ" implies urgency/status. Let's keep it for 2s or until next action?
-                        // Let's fade out after 3s to be safe and clean.
                         setTimeout(() => {
                             msgOverlay.style.opacity = '0';
                         }, 10000);
@@ -246,7 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (gameFinished || isCinematicPaused) return;
         if (motifs.length > 50) return;
 
-        // console.log("Spawning motif..."); 
         const idx = Math.floor(Math.random() * CONFIG.normalImages.length);
         const img = CONFIG.normalImages[idx];
 
@@ -326,7 +328,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // 修正：スマホの反応を即時化
     function handleInput(e) {
+        if (e.type === 'touchstart') e.preventDefault();
         if (gameFinished || isCinematicPaused) return;
 
         const type = e.type;
@@ -424,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cinematicImage.src = `/static/assets/${imgName}`;
 
         cinematicImage.classList.remove('spin-anim');
-        cinematicImage.classList.remove('large-anim'); // Clear previous
+        cinematicImage.classList.remove('large-anim');
 
         if (imgName.includes('202601_3')) {
             cinematicImage.classList.add('large-anim');
@@ -435,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             cinematicOverlay.classList.remove('active');
-            cinematicImage.classList.remove('large-anim'); // Cleanup
+            cinematicImage.classList.remove('large-anim');
             callback();
         }, 1500);
     }
@@ -487,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(msgDiv);
         container.appendChild(btn);
 
-        gameArea.appendChild(container); // gameArea guaranteed by DOMContentLoaded check?
+        gameArea.appendChild(container);
 
         requestAnimationFrame(() => {
             container.classList.add('visible');
@@ -495,8 +499,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loop() {
-        const now = Date.now();
-
         if (!isCinematicPaused && !gameFinished) {
             resolveCollisions();
 
@@ -510,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Init & Event Binding ---
-
+    // 修正：touchstart に passive: false を指定
     if (gameArea) {
         gameArea.addEventListener('mousedown', handleInput);
         gameArea.addEventListener('touchstart', handleInput, { passive: false });
@@ -522,27 +524,22 @@ document.addEventListener('DOMContentLoaded', () => {
         startButton.addEventListener('click', () => {
             console.log("Start button clicked");
 
-            // UI Transition
             startScreen.classList.add('hidden');
             setTimeout(() => {
                 if (messageOverlay) {
                     messageOverlay.style.opacity = '1';
-                    // Auto fade out after 6 seconds
                     setTimeout(() => {
                         messageOverlay.style.opacity = '0';
                     }, 6000);
                 }
             }, 500);
 
-            // Game State Reset
             gameFinished = false;
             motifs.forEach(m => m.remove());
             motifs = [];
             mergedOrderList = [];
             previousMergedCount = 0;
 
-            // Start Engine
-            // Initial Spawn: 15 items scattered
             for (let i = 0; i < 15; i++) {
                 const idx = Math.floor(Math.random() * CONFIG.normalImages.length);
                 const img = CONFIG.normalImages[idx];
@@ -552,15 +549,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const maxX = CONFIG.containerW - r - CONFIG.padding;
                 const x = minX + Math.random() * (maxX - minX);
 
-                // Scatter Y in upper/mid area so they fall/settle nicely
                 const y = 100 + Math.random() * (CONFIG.containerH - 350);
 
                 const m = new Motif(Date.now() + Math.random(), 'normal', x, y, img);
                 motifs.push(m);
             }
 
-            updateUI(); // Important: Update new count UI
-            startAutoSpawn(); // Start 3s timer
+            updateUI();
+            startAutoSpawn();
             loop();
         });
     } else {

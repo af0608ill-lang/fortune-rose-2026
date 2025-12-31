@@ -414,3 +414,15 @@ html {
     font-size: 14px;
     letter-spacing: 0.1rem;
 }
+
+canvas {
+    /* ズームやスクロールなどの標準動作を無効化し、自作ゲームの操作だけを通す */
+    touch-action: none;
+
+    /* 長押しでメニューが出るのを防ぐ */
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+
+    /* タップした時の青い光を消す */
+    -webkit-tap-highlight-color: transparent;
+}
