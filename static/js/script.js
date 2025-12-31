@@ -328,8 +328,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 修正：スマホの反応を即時化
+    // 修正1：リスタートボタンを触っている時は preventDefault を避ける
     function handleInput(e) {
+        if (e.target.closest('#finale-container')) return;
         if (e.type === 'touchstart') e.preventDefault();
         if (gameFinished || isCinematicPaused) return;
 
@@ -470,6 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
+    // 修正2：ボタンの反応を pointerdown (タッチ即時反応) に変更
     function createFinaleUI(messageText) {
         const container = document.createElement('div');
         container.id = 'finale-container';
@@ -485,7 +487,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.createElement('button');
         btn.innerText = "もう一度遊ぶ";
         btn.className = 'restart-btn';
-        btn.onclick = () => location.reload();
+
+        // スマホでもPCでも確実に反応するように修正
+        btn.addEventListener('pointerdown', (e) => {
+            e.stopPropagation();
+            location.reload();
+        });
 
         container.appendChild(img);
         container.appendChild(msgDiv);
@@ -512,7 +519,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Init & Event Binding ---
-    // 修正：touchstart に passive: false を指定
     if (gameArea) {
         gameArea.addEventListener('mousedown', handleInput);
         gameArea.addEventListener('touchstart', handleInput, { passive: false });
