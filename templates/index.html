@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=375, user-scalable=no, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jost:wght@100..900&family=Noto+Sans+JP:wght@100..900&display=swap"
+        rel="stylesheet">
+    <title>HAPPY NEW YEAR</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Google Fonts: Noto Sans JP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Jost:wght@300;400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- New Stats UI (Top Left) -->
+        <div id="stats-ui">
+            <div id="progress-circle">
+                <span id="progress-text">0/5</span>
+            </div>
+            <div id="count-display">
+                <!-- Counters for Merged Types -->
+                <div class="count-item" id="count-type-1">
+                    <img src="/static/assets/202601_1.png" alt="red"><span>×0</span>
+                </div>
+                <div class="count-item" id="count-type-2">
+                    <img src="/static/assets/202601_2.png" alt="yellow"><span>×0</span>
+                </div>
+                <div class="count-item" id="count-type-3">
+                    <img src="/static/assets/202601_3.png" alt="purple"><span>×0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen">
+            <h1 class="start-title">HAPPY NEW YEAR</h1>
+            <img src="/static/assets/202601_com.png" class="start-image" alt="Title Image">
+            <p class="start-desc">2つの色を順に選び、<br>あなたへの言葉を紡いでください。</p>
+            <p class="start-desc">27通りの色彩が、今のあなたに<br>必要なメッセージを届けます。</p>
+            <button id="start-button">START</button>
+        </div>
+
+        <div id="game-area"></div>
+
+        <!-- Instruction Overlay -->
+        <div id="message-overlay"
+            style="position: absolute; top: 15%; left: 0; width: 100%; text-align: center; pointer-events: none; z-index: 10; opacity: 0; transition: opacity 0.5s;">
+            <p
+                style="background: transparent; display: inline-block; padding: 10px; border-radius: 10px; font-weight: 300; border: 1px solid white; color: #333; font-family: 'Noto Sans JP', sans-serif;">
+                ２つのばらを連続クリックして<br>くっつけてね<br>5つ揃ったらメッセージが現れます
+            </p>
+        </div>
+    </div>
+    <script src="/static/js/script.js"></script>
+</body>
+
+</html>

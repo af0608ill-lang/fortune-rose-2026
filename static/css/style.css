@@ -1,0 +1,416 @@
+:root {
+    --normal-size: 64px;
+    --merged-size: 168px;
+    --final-size: 512px;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #222;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300 !important;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-container {
+    width: 375px;
+    height: 667px;
+    position: relative;
+    overflow: hidden;
+    background-color: #dce9ee;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+
+    /* visual square */
+}
+
+/* Stats UI */
+#stats-ui {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    z-index: 50;
+    /* Above game, below overlays */
+    pointer-events: none;
+    font-family: 'Jost', sans-serif;
+    color: #333;
+    font-weight: 300;
+}
+
+#progress-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    transition: transform 0.1s;
+}
+
+.pop-active {
+    animation: popScale 3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popScale {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(3.4);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+#progress-text {
+    font-size: 19px;
+}
+
+#count-display {
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    gap: 18px;
+    /* Add gap between counters */
+}
+
+.count-item {
+    display: flex;
+    align-items: center;
+}
+
+.count-item img {
+    height: 50px;
+    width: auto;
+    margin-right: 7px;
+}
+
+/* Start Screen */
+#start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(220, 233, 238, 0.98);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+#start-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.start-title {
+    font-size: 32px;
+    /* Keep scale or use px preference? User said 'contents' changed, but maybe keep size large? User set font-settings in previous prompt. Let's make it look good with Jost */
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    color: #5b5b5b;
+    /* Requested White */
+    margin-bottom: 20px;
+    letter-spacing: 0.35rem;
+}
+
+.start-image {
+    width: 310px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: floatFinal 3s infinite ease-in-out;
+}
+
+.start-desc {
+    font-size: 12px;
+    color: #333;
+    text-align: center;
+    line-height: 1.5;
+    letter-spacing: 0.2rem;
+    margin-bottom: 30px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 200;
+}
+
+.start-desc:first-of-type {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #5b5b5b;
+    letter-spacing: 0.35rem;
+}
+
+.start-desc:last-of-type {
+    margin-top: 0;
+}
+
+#start-button {
+    background-color: rgb(143, 163, 173);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    font-family: 'Jost', sans-serif;
+    font-weight: 200 !important;
+    letter-spacing: 0.25rem;
+    transition: transform 0.1s;
+}
+
+#start-button:active {
+    transform: scale(0.95);
+}
+
+#game-area {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.motif {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    will-change: transform;
+    top: 0;
+    left: 0;
+    transition: filter 0.2s;
+}
+
+.motif.normal {
+    width: 64px;
+    height: 64px;
+    margin-left: -32px;
+    margin-top: -32px;
+    border-radius: 50%;
+}
+
+.motif.merged {
+    width: 168px;
+    height: 168px;
+    margin-left: -84px;
+    margin-top: -84px;
+    border-radius: 0%;
+    object-fit: contain;
+}
+
+/* Selected State */
+.motif.selected {
+    filter: brightness(1.2) drop-shadow(0 15px 15px rgba(0, 0, 0, 0.3));
+    z-index: 100;
+}
+
+/* Cinematic Overlay */
+#cinematic-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#cinematic-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#cinematic-image {
+    width: 50%;
+    height: auto;
+    transform: scale(0);
+}
+
+.spin-anim {
+    animation: cinematicSpin 1.5s ease-in-out forwards;
+}
+
+@keyframes cinematicSpin {
+    0% {
+        transform: rotate(0deg) scale(0.5);
+        opacity: 0;
+    }
+
+    20% {
+        transform: rotate(36deg) scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 1;
+    }
+}
+
+.spin-anim.large-anim {
+    animation-name: cinematicSpinLarge;
+}
+
+@keyframes cinematicSpinLarge {
+    0% {
+        transform: rotate(0deg) scale(0.6);
+        opacity: 0;
+    }
+
+    20% {
+        transform: rotate(36deg) scale(1.4);
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1.3);
+        opacity: 1;
+    }
+}
+
+/* Finale Styles */
+#finale-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(220, 233, 238, 0.95);
+    opacity: 0;
+    transition: opacity 1s ease;
+    z-index: 999;
+    pointer-events: none;
+}
+
+#finale-container.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.finale-image {
+    width: 310px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: floatFinal 3s infinite ease-in-out;
+}
+
+.finale-text {
+    font-size: 15px;
+    color: rgb(91, 91, 91);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 200;
+    text-align: center;
+    line-height: 1.6;
+    margin: 10px 30px;
+    white-space: pre-wrap;
+    font-weight: 300;
+    background: linear-gradient(120deg, rgb(243, 249, 255), rgb(253, 250, 255));
+    padding: 15px;
+    border-radius: 10px;
+    letter-spacing: 0.35rem;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+#finale-container.visible .finale-text {
+    animation: fadeInUpText 3s ease-out forwards;
+}
+
+@keyframes fadeInUpText {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.restart-btn {
+    display: none;
+    background-color: rgb(143, 163, 173);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.1s;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300 !important;
+}
+
+#finale-container.visible .restart-btn {
+    display: block;
+    animation: popBtn 0.5s 1s backwards;
+}
+
+.restart-btn:active {
+    transform: scale(0.95);
+}
+
+@keyframes floatFinal {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes popBtn {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+#message-overlay p {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300 !important;
+    color: #333;
+    font-size: 14px;
+    letter-spacing: 0.1rem;
+}
